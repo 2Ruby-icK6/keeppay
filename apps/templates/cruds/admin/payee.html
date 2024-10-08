@@ -1,0 +1,268 @@
+{% extends 'layouts/base.html' %}
+
+{% load widget_tweaks %}
+
+{% block title %} Update Balance {% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-10">
+              <h3 class="mb-0">Create Transaction</h3>
+            </div>
+            <div class="col">
+              <a class="text-dark" href="{% url 'fee_type_list' %}">
+                <button class="btn btn-sm btn-primary">
+                  <span class="">Create Fee</span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <h6 class="heading-small text-muted mb-4">Transaction</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Student Name</label>
+                    {{ form.Student }} 
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fee section -->
+              <div id="fees-container">
+                <div class="row fee-row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-fee-type">Fee Type</label>
+                      <select class="form-control fee-type-select" name="Payment_type">
+                        <option value="">Select Fee</option> <!-- Default "Select Fee" option -->
+                        {% for fee_type in fee_types %}
+                          <option value="{{ fee_type.id }}" data-fee-amount="{{ fee_type.Fee_amount }}">
+                            {{ fee_type.Fee_name }} - {{ fee_type.Fee_amount }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-amount">Amount</label>
+                      <input type="number" class="form-control amount-input" name="Amount" min="0" />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-status">Status</label>
+                      {{ form.Status }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12 text-right">
+                  <button type="button" class="btn btn-sm btn-primary" id="add-fee-btn">Add Fee Type</button>
+                </div>
+              </div>
+
+              <input type="hidden" id="max-fees" value="{{ fee_count }}">
+              
+              <div class="row">
+                <div class="col-lg-8">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-officer">Received by</label>
+                    {{ form.Officer }}
+                    <input type="hidden" name="Officer" value="{{ form.Officer.value }}">
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-date">Transaction Date</label>
+                    {{ form.Transaction_date }}
+                  </div>
+                </div>
+              </div>
+              <hr class="my-4" />
+              <div class="col text-right">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-light" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <button class="btn btn-lg btn-primary" type="submit">Submit Payment</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<!-- Include Select2 CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+  /* Override default select2 styles to match Bootstrap theme */
+  .select2-container--bootstrap-5 .select2-selection {
+    height: calc(1.5em + .75rem + 2px); /* Align with Bootstrap input height */
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  }
+
+  /* Adjust dropdown width to match Bootstrap's form-control */
+  .select2-container {
+    width: auto !important;
+  }
+
+  /* Placeholder color */
+  .select2-container--default .select2-selection__placeholder {
+    color: #6c757d; /* Bootstrap's placeholder color */
+  }
+
+  /* Input focus state */
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #495057; /* Text color */
+  }
+
+  .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+    border-color: #495057 transparent transparent transparent; /* Arrow color */
+  }
+
+  /* Dropdown menu customization */
+  .select2-container--bootstrap-5 .select2-dropdown {
+    border-radius: .375rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+  }
+</style>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    $('#id_Student').select2({
+      placeholder: "Select a student",  // Placeholder for when no student is selected
+      theme: 'bootstrap-5',  // Apply Bootstrap styling to Select2
+      width: 'resolve',  // Ensures the dropdown fits the width of the parent container
+    });
+    
+    const addFeeBtn = document.getElementById('add-fee-btn');
+    const feesContainer = document.getElementById('fees-container');
+    const maxFees = parseInt(document.getElementById('max-fees').value);
+    let feeCount = 1;
+
+    // Function to disable negative numbers and set max value
+    function setMaxAmount(feeSelect, amountInput) {
+      feeSelect.addEventListener('change', function () {
+        const selectedOption = feeSelect.options[feeSelect.selectedIndex];
+        const maxAmount = parseFloat(selectedOption.getAttribute('data-fee-amount'));  // Get max value from option
+
+        if (!isNaN(maxAmount)) {
+          amountInput.setAttribute('max', maxAmount);  // Set max attribute
+        } else {
+          amountInput.removeAttribute('max');  // Remove max if no valid amount
+        }
+
+        // Reset the amount value if it exceeds the selected max
+        if (amountInput.value > maxAmount) {
+          amountInput.value = maxAmount;
+        }
+      });
+
+      // Prevent negative values
+      amountInput.addEventListener('input', function () {
+        if (this.value < 0) {
+          this.value = 0;
+        }
+      });
+    }
+
+    // Initialize for the first fee row
+    const initialFeeSelect = document.querySelector('.fee-row select[name="Payment_type"]');
+    const initialAmountInput = document.querySelector('.fee-row input[name="Amount"]');
+    setMaxAmount(initialFeeSelect, initialAmountInput);
+
+    // Event handler for adding more fee rows
+    addFeeBtn.addEventListener('click', function () {
+        if (feeCount < maxFees) {
+            feeCount++;
+
+            const newFeeRow = `
+              <div class="row fee-row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-fee-type">Fee Type</label>
+                    <select class="form-control fee-type-select" name="fee_type_${feeCount}">
+                      <option value="">Select Fee</option>  <!-- Default "Select Fee" option -->
+                      {% for fee_type in fee_types %}
+                        <option value="{{ fee_type.id }}" data-fee-amount="{{ fee_type.Fee_amount }}">{{ fee_type.Fee_name }} - {{ fee_type.Fee_amount }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-amount">Amount</label>
+                    <input type="number" class="form-control amount-input" name="amount_${feeCount}" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-status">Status</label>
+                    <select class="form-control" name="status_${feeCount}">
+                      {% for status_value, status_label in form.Status.field.choices %}
+                        <option value="{{ status_value }}">{{ status_label }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>`;
+              
+            feesContainer.insertAdjacentHTML('beforeend', newFeeRow);
+
+            // Get the newly added fee row fields
+            const newFeeSelect = feesContainer.querySelector(`select[name="fee_type_${feeCount}"]`);
+            const newAmountInput = feesContainer.querySelector(`input[name="amount_${feeCount}"]`);
+
+            // Apply the negative number check and max value logic to the new row
+            setMaxAmount(newFeeSelect, newAmountInput);
+        } else {
+            alert("You have reached the maximum number of fees.");
+        }
+    });
+  });
+</script>
+{% endblock javascripts %}

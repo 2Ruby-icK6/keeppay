@@ -1,0 +1,64 @@
+{% extends 'layouts/base-login.html' %}
+
+{% block title %} Login {% endblock title %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+	<div class="container-fluid vh-100">
+        <div class="row h-100">
+            <div class="col-lg-5 col-md-6 col-sm-12 bg-dark d-flex align-items-center justify-content-center">
+                <div class="login-container text-center p-4">
+                    <img src="/static/assets/img/keeppay.png" alt="Keep Pay Logo" class="mb-4" width="250">
+                    <h1 class="text-primary fw-bold ">Welcome</h1>
+					<div class="text-center text-muted mb-4">
+						{% if msg %}
+							<p>{{ msg }}</p>
+						{% else %}
+							<p>
+								Add your credentials
+							</p>
+						{% endif %}
+					</div>
+                    <div class="login-content">
+						<form method="POST">
+							{% csrf_token %}
+							<div class="input-div one">
+								<div class="i">
+										<i class="fas fa-user"></i>
+								</div>
+								<div class="div">
+										<h5>Email</h5>
+										{{ form.username }}
+								</div>
+							</div>
+							<div class="input-div pass">
+								<div class="i"> 
+									<i class="fas fa-lock"></i>
+								</div>
+								<div class="div">
+									<h5>Password</h5>
+									{{ form.password }}
+								</div>
+							</div>
+							<input type="submit" class="btn" value="Login">
+						</form>
+					</div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-5 d-flex align-items-center justify-content-center">
+				<img class="wave" src="/static/assets/img/side.png">
+                <div class="img">
+					<img src="/static/assets/img/svg/pay.svg">
+				</div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+	<script type="text/javascript" src="/static/assets/js/main.js"></script>
+{% endblock javascripts %}

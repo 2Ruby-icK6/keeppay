@@ -1,0 +1,107 @@
+{% extends 'layouts/baseguest.html' %}
+
+{% block title %} Status {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+
+          <!-- Search bar -->
+          <div class="row align-items-center py-3">
+            <div class="col-lg-6 col-7">
+              <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
+                <div class="form-group mb-0">
+                  <div class="input-group input-group-alternative input-group-merge">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input class="form-control" placeholder="Search" type="text">
+                  </div>
+                </div>
+                <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Header Starts -->
+          <div class="row align-items-center py-2">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">Status Reciept Payments</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="row align-items-center">
+              </div>
+            </div>
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table table-hover align-middle">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Date Paid</th>
+                    <th scope="col">Date Deadline</th>
+                    <th scope="col">Fee</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Received by</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for transaction in transactions %}
+                    <tr>
+                      <th scope="row">
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ transaction.payee }}</span>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ transaction.receiver }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        {{ transaction.dueType }}
+                      </td>
+                      <td>
+                        {{ transaction.date }}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+
+{% endblock javascripts %}

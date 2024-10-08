@@ -1,0 +1,133 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Create Fees {% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Create Fee</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <h6 class="heading-small text-muted mb-4">Add Fee</h6>
+            <div class="pl-lg-4">
+              <div class="row fee-row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-fee-type">Title</label>
+                    <!-- Title of the Fee -->
+                    {{ form.Fee_name }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-amount">Amount</label>
+                    <!-- Amount of the Fee -->
+                    {{ form.Fee_amount }}
+                  </div>
+                </div>
+              </div>
+              <hr class="my-4" />
+              <div class="col text-right">
+                {% if msg %}
+                  <p>{{ msg }}</p>
+                {% else %}
+                  <p></p>
+                {% endif %}
+                <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-xl-8">
+      <div class="card bg-default">
+      </div>
+    </div>
+    <div class="col-xl-4">
+      <div class="card">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">List of Fee</h3>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Fee Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="list">
+              {% for fee_type in fee_types %}
+                <tr>
+                  <th scope="row">
+                    <div class="media align-items-center"> 
+                      <div class="media-body">
+                        <span class="name mb-0 text-sm">{{ fee_type.Fee_name }}</span>
+                      </div>
+                    </div>
+                  </th>
+                  <td>
+                    <div class="media align-items-center"> 
+                      <div class="media-body">
+                        <span class="name mb-0 text-sm">{{ fee_type.Fee_amount }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="{% url 'edit_fee_type' fee_type.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_fee_type' fee_type.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'includes/pagination.html' %}
+
+
+{% endblock content %}
+
+{% block javascripts %} {% endblock javascripts %}

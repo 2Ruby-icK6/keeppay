@@ -1,0 +1,143 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+
+          <!-- Search bar -->
+          <div class="row align-items-center py-3">
+            <div class="col-lg-6">
+              <form class="form-inline" method="GET">
+                <div class="form-group mb-0">
+                  <div class="input-group input-group-alternative input-group-merge">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                    <input class="form-control" placeholder="Search" type="text" name="search" value="{{ request.GET.search }}">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 10px;"><i class="fas fa-search"></i></button>
+              </form>
+            </div>
+
+            <!-- Year Level Filter -->
+            <div class="col-lg-3">
+              <form method="GET" id="year-level-filter">
+                <select name="year_level" class="form-control" onchange="document.getElementById('year-level-filter').submit();">
+                  <option value="">All Year Levels</option>
+                  {% for year in year_levels %}
+                    <option value="{{ year }}" {% if request.GET.year_level == year %}selected{% endif %}>{{ year }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </div>
+          </div>
+
+          <!-- Header Starts -->
+          <div class="row align-items-center py-2">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">List of Students</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="row align-items-center">
+                <a class="text-dark" href="{% url 'import_students' %}">
+                  <button class="btn btn-sm btn-primary text-dark">
+                    <span class="">Import Data</span>
+                  </button>
+                </a>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table table-hover align-middle">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Student Number</th>
+                    <th scope="col">Student Fullname</th>
+                    <th scope="col">Year Level</th>
+                    <th scope="col">Corporate_email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in students %}
+                    <tr>
+                      <th scope="row">
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ student.Student_number }}</span>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ student.First_name }} {{ student.Last_name }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        {{ student.Year_level }}
+                      </td>
+                      <td>
+                        {{ student.Corporate_email }}
+                      </td>
+                      <td>
+                        <span class="badge">
+                          {% if student.total_amount == 0 %}
+                              <span class="rounded-pill bg-danger text-white p-2">Unpaid</span>
+                          {% elif student.total_amount > 0 and student.remaining_balance > 0 %}
+                              <span class="rounded-pill bg-warning text-white p-2">Pending</span>
+                          {% elif student.total_amount >= total_fees %}
+                              <span class="rounded-pill bg-success text-white p-2">Completed</span>
+                          {% endif %}
+                        </span>
+                      </td>
+                      <td>
+                        <a class="text-dark" href="{% url 'student_detail' student.Student_number %}">
+                          <button class="btn btn-sm btn-primary text-dark">
+                            <span class="">View</span>
+                          </button> 
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% include 'includes/pagination.html' %}
+
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+
+{% endblock javascripts %}

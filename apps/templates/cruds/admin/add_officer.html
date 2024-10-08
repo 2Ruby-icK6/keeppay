@@ -1,0 +1,120 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Add New Officer {% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Add Officer</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <h6 class="heading-small text-muted mb-4">New Officer</h6>
+            <div class="pl-lg-4">
+              <div class="row fee-row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-student">Select Student</label>
+                    {{ form.Student }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-position">Position</label>
+                    {{ form.Position }}
+                  </div>
+                </div>
+              </div>
+              <hr class="my-4" />
+              <div class="col text-right">
+                {% if msg %}
+                  <p>{{ msg }}</p>
+                {% else %}
+                  <p></p>
+                {% endif %}
+                <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+  /* Override default select2 styles to match Bootstrap theme */
+  .select2-container--bootstrap-5 .select2-selection {
+    height: calc(1.5em + .75rem + 2px); /* Align with Bootstrap input height */
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  }
+
+  /* Adjust dropdown width to match Bootstrap's form-control */
+  .select2-container {
+    width: auto !important;
+  }
+
+  /* Placeholder color */
+  .select2-container--default .select2-selection__placeholder {
+    color: #6c757d; /* Bootstrap's placeholder color */
+  }
+
+  /* Input focus state */
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #495057; /* Text color */
+  }
+
+  .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
+    border-color: #495057 transparent transparent transparent; /* Arrow color */
+  }
+
+  /* Dropdown menu customization */
+  .select2-container--bootstrap-5 .select2-dropdown {
+    border-radius: .375rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+  }
+</style>
+
+<script>
+  $('#id_Student').select2({
+      placeholder: "Select a student",  // Placeholder for when no student is selected
+      theme: 'bootstrap-5',  // Apply Bootstrap styling to Select2
+      width: 'resolve',  // Ensures the dropdown fits the width of the parent container
+    });
+</script>
+{% endblock javascripts %}

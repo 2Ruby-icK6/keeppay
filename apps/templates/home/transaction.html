@@ -1,0 +1,118 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} List of Transactions {% endblock title %}
+
+{% block content %}
+
+  <div class="header pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+
+          <div class="col-lg-8">
+            <form class="form-inline mr-sm-3" id="navbar-search-main" method="get">
+              <div class="form-group mb-0">
+                <div class="input-group input-group-alternative input-group-merge">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  </div>
+                  <input class="form-control" name="search" placeholder="Search" type="text" value="{{ request.GET.search }}">
+                </div>
+              </div>
+              <div class="form-group mb-0">
+                <select class="form-control" name="payment_type">
+                  <option value="">All Fee Types</option>
+                  {% for payment_type in payment_types %}
+                    <option value="{{ payment_type.id }}" {% if request.GET.payment_type == payment_type.id %}selected{% endif %}>
+                      {{ payment_type.Fee_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" class="btn btn-sm btn-primary" style="margin-left: 10px;"><i class="fas fa-search"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">List of Transactions</h3>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Student Number</th>
+                  <th scope="col">Student Name</th>
+                  <th scope="col">Received by</th>
+                  <th scope="col">Fee Type</th>
+                  <th scope="col">Amount Paid</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% for transaction in transactions %}
+                  <tr>
+                    <th scope="row">
+                      <div class="media align-items-center"> 
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">{{ transaction.Student.Student_number }}</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td>
+                      <div class="media align-items-center"> 
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">{{ transaction.Student }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="media align-items-center"> 
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">{{ transaction.Officer }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      {{ transaction.Payment_type }}
+                    </td>
+                    <td>
+                      {{ transaction.Amount }}
+                    </td>
+                    <td>
+                      {{ transaction.Transaction_date }}
+                    </td>
+                    <td>
+                      <a href="{% url 'transaction-delete' transaction.id %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center">No transactions found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+
+  {% include 'includes/pagination.html' %}
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

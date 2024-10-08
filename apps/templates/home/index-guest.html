@@ -1,0 +1,180 @@
+{% extends 'layouts/baseguest.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7"></div> 
+          </div>
+          
+          <!-- Card stats -->
+          <div class="row">
+            <div class="col-xl-6 col-md-6">
+              <div class="card card-stats">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Welcome!</h5>
+                      <span class="h2 font-weight-bold mb-0">{{ student.First_name }} {{ student.Last_name }}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                        <i class="ni ni-single-02"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 mb-0 text-sm font-weight-bold">
+                    Student Number: 
+                    {{ student.Student_number }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6 col-md-6">
+              <div class="card card-stats">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Unpaid Fees</h5>
+                      <span class="h2 font-weight-bold mb-0">₱ {{ remaining_balance }}</span>
+                    </div>
+                    <div class="col-auto">
+                      <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                        <i class="ni ni-money-coins"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-3 mb-0 text-sm">
+                    <span class="text-nowrap font-weight-bold">Total Fees</span>
+                    <span class="text-danger mr-2 font-weight-bold"></i>₱ {{ total_fees }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <div class="row">
+        <div class="col-xl-8">
+          <div class="card bg-default">
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="card">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="mb-0">Recent Transactions</h3>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Fee</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Received By</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for transaction in transactions %}
+                    <tr>
+                      <th scope="row">
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ transaction.Transaction_date }}</span>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ transaction.Payment_type }}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        {{ transaction.Amount }}
+                      </td>
+                      <td>
+                        {{ transaction.Officer }}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="mb-0">All Fees</h3>
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Fees</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for fee in fee %}
+                    <tr>
+                      <th scope="row">
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ fee.Fee_name }}</span>
+                          </div>
+                        </div>
+                      </th>
+                      <td>
+                        <div class="media align-items-center"> 
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ fee.Fee_amount }}</span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

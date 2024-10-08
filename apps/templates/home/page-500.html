@@ -1,0 +1,31 @@
+{% extends 'layouts/base-login.html' %}
+
+{% block title %} Error 500 {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Page content -->
+    <div class="container-fluid vh-100"></div>
+      <div class="row h-100">
+        <div class="col-lg-5 col-md-6 col-sm-12 bg-dark d-flex align-items-center justify-content-center">
+            <div class="login-container text-center p-4">
+                <img src="/static/assets/img/keeppay.png" alt="Keep Pay Logo" class="mb-4" width="250">
+                <h1 class="text-primary fw-bold ">Oups! Error 500</h1>
+              </div>
+        </div>
+        <div class="col-lg-6 col-md-5 d-flex align-items-center justify-content-center">
+            <img class="wave" src="/static/assets/img/side.png">
+            <div class="img">
+              <img src="/static/assets/img/svg/register.svg">
+            </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

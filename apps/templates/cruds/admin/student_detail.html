@@ -1,0 +1,110 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Student Details{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+      <div class="col-xl-8 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Student Details</h3>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="row ">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Full Name:</label>
+                    <input class="form-control-plaintext" type="text" readonly placeholder="{{ student.First_name }} {{ student.Last_name }}">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Student Number:</label>
+                    <input class="form-control-plaintext" type="text" readonly placeholder="{{ student.Student_number }}"> 
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Year Level:</label>
+                    <input class="form-control-plaintext" type="text" readonly placeholder="{{ student.Year_level }}"> 
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Corporate Email:</label>
+                    <input class="form-control-plaintext" type="text" readonly placeholder="{{ student.Corporate_email }}">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header border-0">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">Transactions</h3>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <!-- Projects table -->
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Transaction Date</th>
+                  <th scope="col">Payment Type</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% for transaction in transactions %}
+                  <tr>
+                    <th scope="row">
+                      <div class="media align-items-center"> 
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">{{ transaction.Transaction_date }}</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td>
+                      <div class="media align-items-center"> 
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">{{ transaction.Payment_type }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="name mb-0 text-sm">{{ transaction.Amount }}</span>
+                    </td>
+                    <td>
+                      <a href="{% url 'transaction-delete' transaction.id %}" class="btn btn-sm btn-danger">Delete</a>
+
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                      <td colspan="3" class="text-center">No transactions found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock content %}
