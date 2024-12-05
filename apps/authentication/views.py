@@ -19,6 +19,7 @@ from django.contrib.auth.models import User
 import csv
 from .forms import CSVUploadForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import models
 
 # -------------------------------------------------- Old ------------------------------
 
@@ -95,7 +96,7 @@ def import_students(request):
 
             except Exception as e:
                 # Log the error and continue
-                errors.append(f"Error with row {row}: {e}")
+                errors.append(f"Error with student {row['Last_name'], row['First_name']}: {e}")
 
         # Report errors back to the user
         if errors:
@@ -573,19 +574,39 @@ def payee_form(request):
                 if key.startswith('fee_type_'):
                     fee_index = key.split('_')[2]
                     fee_type_id = request.POST[key]
-                    amount = request.POST.get(f'amount_{fee_index}')
+                    amount = float(request.POST.get(f'amount_{fee_index}', 0))
                     status = request.POST.get(f'status_{fee_index}')
 
-                    fee_instance = Transaction(
-                        Student=payee_instance.Student, 
-                        Officer=payee_instance.Officer,  
-                        Payment_type_id=fee_type_id,     
-                        Amount=amount,
-                        Status=status
-                    )
-                    fees.append(fee_instance)
+                    # Fetch the total fee amount owed for this fee type
+                    fee_type = FeeType.objects.get(id=fee_type_id)
+                    total_fee_owed = fee_type.amount
 
-            Transaction.objects.bulk_create(fees)
+                    # Calculate total payments made so far for this fee type
+                    total_paid = Transaction.objects.filter(
+                        Student=payee_instance.Student,
+                        Payment_type_id=fee_type_id
+                    ).aggregate(total=models.Sum('Amount'))['total'] or 0
+
+                    # Check if adding this payment exceeds the total fee owed
+                    if total_paid + amount > total_fee_owed:
+                        remaining_balance = total_fee_owed - total_paid
+                        messages.warning(
+                            request,
+                            f"Payment of {amount} exceeds remaining balance ({remaining_balance}) for fee type '{fee_type.name}'."
+                        )
+                    else:
+                        # Create the transaction if it does not exceed the remaining balance
+                        fee_instance = Transaction(
+                            Student=payee_instance.Student,
+                            Officer=payee_instance.Officer,
+                            Payment_type_id=fee_type_id,
+                            Amount=amount,
+                            Status=status
+                        )
+                        fees.append(fee_instance)
+
+            if fees:
+                Transaction.objects.bulk_create(fees)
 
             # Add a success message
             messages.success(request, 'Transaction was successfully created.')
@@ -596,6 +617,7 @@ def payee_form(request):
                     messages.error(request, f"Error in {field}: {error}") 
     else:
         form = Payee(user=request.user)
+
 
     return render(request, 'cruds/admin/payee.html', {
         'form': form,
