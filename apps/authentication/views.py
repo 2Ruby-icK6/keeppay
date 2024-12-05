@@ -67,34 +67,44 @@ def import_students(request):
             reader = csv.DictReader(decoded_file)
             guest_group, created = Group.objects.get_or_create(name='Guest')
 
-            for row in reader:
-                try:
-                    user = User.objects.create(
-                        username=row['Corporate_email'],
-                        email=row['Corporate_email'],
-                        password=make_password(row['Password']),
-                        first_name=row['First_name'],
-                        last_name=row['Last_name'],
-                    )
-                    user.groups.add(guest_group)
-                    user.save()
+        errors = []
 
-                    student = Student.objects.create(
-                        Student_number=row['Student_number'],
-                        First_name=row['First_name'],
-                        Last_name=row['Last_name'],
-                        Year_level=row.get('Year_level', None),
-                        Corporate_email=row['Corporate_email'],
-                        Password=row['Password'],
-                    )
-                    student.save()
+        for row in reader:
+            try:
+                # Create the User
+                user = User.objects.create(
+                    username=row['Corporate_email'],
+                    email=row['Corporate_email'],
+                    password=make_password(row['Password']),
+                    first_name=row['First_name'],
+                    last_name=row['Last_name'],
+                )
+                user.groups.add(guest_group)
+                user.save()
 
-                except Exception as e:
-                    messages.error(request, f"Error creating student: {e}")
-                    return redirect('import_students')
+                # Create the Student
+                student = Student.objects.create(
+                    Student_number=row['Student_number'],
+                    First_name=row['First_name'],
+                    Last_name=row['Last_name'],
+                    Year_level=row.get('Year_level', None),
+                    Corporate_email=row['Corporate_email'],
+                    Password=row['Password'],
+                )
+                student.save()
 
-            messages.success(request, 'Students imported successfully.')
-            return redirect('index')
+            except Exception as e:
+                # Log the error and continue
+                errors.append(f"Error with row {row}: {e}")
+
+        # Report errors back to the user
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+        else:
+            messages.success(request, "Students imported successfully!")
+        
+        return redirect('import_students')
 
     else:
         form = CSVUploadForm()
