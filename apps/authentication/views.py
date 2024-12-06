@@ -307,8 +307,26 @@ class TransactionListView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        return Transaction.objects.all().order_by('-Transaction_date')
-    
+        queryset = Transaction.objects.all().order_by('-Transaction_date')
+        
+        # Get the search query and payment type from the request
+        search_query = self.request.GET.get('search', '')
+        payment_type_filter = self.request.GET.get('payment_type', '')
+
+        if search_query:
+            # Filter by Student Number or Student Name
+            queryset = queryset.filter(
+                Q(Student__Student_number__icontains=search_query) | 
+                Q(Student__First_name__icontains=search_query) | 
+                Q(Student__Last_name__icontains=search_query)
+            ).distinct()
+        
+        if payment_type_filter:
+            # Filter by Payment Type
+            queryset = queryset.filter(Payment_type__id=payment_type_filter).distinct()
+        
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -351,11 +369,31 @@ class TransactionListView(ListView):
         # Sum all amounts (total collections)
         total_collections = Transaction.objects.aggregate(total=Sum('Amount'))['total'] or 0
 
+        # Calculate total collections by year level
+        collections_by_year = (
+            Transaction.objects
+            .values('Student__Year_level')  # Adjust 'year_level' to the actual field name in your Student model
+            .annotate(total_amount=Sum('Amount'))
+            .order_by('Student__Year_level')
+        )
+
+        # Prepare data for the chart
+        year_levels = []
+        amounts = []
+
+        for entry in collections_by_year:
+            year_levels.append(entry['Student__Year_level'])
+            amounts.append(entry['total_amount'])
+
         # Add these values to the context
         context['total_students'] = total_students
         context['pending_payers'] = pending_payers
         context['paid_payers'] = paid_payers
         context['total_collections'] = total_collections
+        context['collections_by_year'] = {
+            'Year_levels': year_levels,
+            'amounts': amounts,
+        }
 
         return context
 

@@ -15,6 +15,7 @@
           <div class="row align-items-center py-2">
             <div class="col-lg-6 col-7">
               <h6 class="h2 text-white d-inline-block mb-0">Transactions</h6>
+              
             </div>
           </div>
 
@@ -187,14 +188,43 @@
             </div>
           </div>
         </div>
+
+      
+        <div class="col-xl-6">
+          <div class="card">
+              <div class="card-header border-0">
+                  <div class="row align-items-center">
+                      <div class="col">
+                          <h6 class="text-uppercase text-muted ls-1 mb-1">For First Semester</h6>
+                          <h5 class="h3 mb-0">Total Collections by Year Level</h5>
+                      </div>
+                      <div class="col text-right">
+                        <a href="" class="btn btn-sm btn-primary">Export Charts</a>
+                      </div>
+                  </div>
+              </div>
+              <div class="card-body">
+                  <!-- Chart -->
+                  <div class="chart" data-year-levels="{{ collections_by_year.Year_levels|join:', ' }}"
+                      data-amounts="{{ collections_by_year.amounts|join:', ' }}">
+                      <canvas id="chart-bars" class="chart-canvas"></canvas>
+                  </div>
+              </div>
+          </div>
       </div>
+
+      </div>
+
+      
+    
     </div>
+    
 
 {% endblock content %}
 
 <!-- Specific JS goes HERE --> 
 {% block javascripts %}
-
+  
   <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
   <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
 

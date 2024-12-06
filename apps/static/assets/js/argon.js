@@ -829,7 +829,8 @@ var BarsChart = (function() {
 	//
 
 	var $chart = $('#chart-bars');
-
+	var yearLevels = $chart.closest('.chart').data('year-levels').split(', '); // Access the data attribute
+    var amounts = $chart.closest('.chart').data('amounts').split(', ').map(Number); // Convert to numbers
 
 	//
 	// Methods
@@ -842,10 +843,10 @@ var BarsChart = (function() {
 		var ordersChart = new Chart($chart, {
 			type: 'bar',
 			data: {
-				labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-				datasets: [{
-					label: 'Sales',
-					data: [25, 20, 30, 22, 17, 29]
+				labels: yearLevels,
+           		datasets: [{
+                	label: 'Total Collections',
+                	data: amounts
 				}]
 			}
 		});
