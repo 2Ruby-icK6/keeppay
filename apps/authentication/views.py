@@ -574,28 +574,15 @@ def payee_form(request):
                 if key.startswith('fee_type_'):
                     fee_index = key.split('_')[2]
                     fee_type_id = request.POST[key]
-                    amount = float(request.POST.get(f'amount_{fee_index}', 0))
+                    amount = request.POST.get(f'amount_{fee_index}')
                     status = request.POST.get(f'status_{fee_index}')
 
-                    # Fetch the total fee amount owed for this fee type
-                    fee_type = FeeType.objects.get(id=fee_type_id)
-                    total_fee_owed = fee_type.amount
-
-                    # Calculate total payments made so far for this fee type
-                    total_paid = Transaction.objects.filter(
+                    # Check for duplicate fee_type_id
+                    if not Transaction.objects.filter(
                         Student=payee_instance.Student,
                         Payment_type_id=fee_type_id
-                    ).aggregate(total=models.Sum('Amount'))['total'] or 0
-
-                    # Check if adding this payment exceeds the total fee owed
-                    if total_paid + amount > total_fee_owed:
-                        remaining_balance = total_fee_owed - total_paid
-                        messages.warning(
-                            request,
-                            f"Payment of {amount} exceeds remaining balance ({remaining_balance}) for fee type '{fee_type.name}'."
-                        )
-                    else:
-                        # Create the transaction if it does not exceed the remaining balance
+                    ).exists():
+                        # Create a new fee instance only if it doesn't already exist
                         fee_instance = Transaction(
                             Student=payee_instance.Student,
                             Officer=payee_instance.Officer,
@@ -604,6 +591,12 @@ def payee_form(request):
                             Status=status
                         )
                         fees.append(fee_instance)
+                    else:
+                        # Log a message for duplicate fee
+                        messages.warning(
+                            request, 
+                            f"Fee type {fee_type_id} already exists for this student."
+                        )
 
             if fees:
                 Transaction.objects.bulk_create(fees)
