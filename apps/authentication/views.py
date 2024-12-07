@@ -601,7 +601,6 @@ def payee_form(request):
 
     if request.method == 'POST':
         form = Payee(request.POST, user=request.user)
-#test
         if form.is_valid():
             payee_instance = form.save(commit=False)
             payee_instance.Officer = officer
@@ -614,27 +613,20 @@ def payee_form(request):
                     fee_type_id = request.POST[key]
                     amount = request.POST.get(f'amount_{fee_index}')
                     status = request.POST.get(f'status_{fee_index}')
+                    receipt_number = form.Receipt_number
+                    receipt_image = form.Receipt_image
 
-                    # Check for duplicate fee_type_id
-                    if not Transaction.objects.filter(
+                    # Create a new fee instance, even if duplicates exist
+                    fee_instance = Transaction(
                         Student=payee_instance.Student,
-                        Payment_type_id=fee_type_id
-                    ).exists():
-                        # Create a new fee instance only if it doesn't already exist
-                        fee_instance = Transaction(
-                            Student=payee_instance.Student,
-                            Officer=payee_instance.Officer,
-                            Payment_type_id=fee_type_id,
-                            Amount=amount,
-                            Status=status
-                        )
-                        fees.append(fee_instance)
-                    else:
-                        # Log a message for duplicate fee
-                        messages.warning(
-                            request, 
-                            f"Fee type {fee_type_id} already exists for this student."
-                        )
+                        Officer=payee_instance.Officer,
+                        Payment_type_id=fee_type_id,
+                        Amount=amount,
+                        Status=status,
+                        Receipt_number=receipt_number,
+                        Receipt_image=receipt_image
+                    )
+                    fees.append(fee_instance)
 
             if fees:
                 Transaction.objects.bulk_create(fees)
@@ -645,10 +637,9 @@ def payee_form(request):
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"Error in {field}: {error}") 
+                    messages.error(request, f"Error in {field}: {error}")
     else:
         form = Payee(user=request.user)
-
 
     return render(request, 'cruds/admin/payee.html', {
         'form': form,
@@ -656,9 +647,10 @@ def payee_form(request):
         'transaction': transaction,
         'fee_types': fee_types,
         'fee_count': fee_count,
-        'officer': officer,  
-        'student': student 
+        'officer': officer,
+        'student': student,
     })
+
 
 
 @allowed_user(roles=['Admin'])

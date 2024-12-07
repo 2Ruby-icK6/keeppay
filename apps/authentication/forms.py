@@ -143,9 +143,21 @@ class Payee(forms.ModelForm):
         required=False  # We will automate this
     )
 
+    Receipt_number = forms.CharField(
+        max_length=100, 
+        label="Receipt Number",  # Optional: Label for the field
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Receipt Number'}),
+        required=False
+    )
+
+    Receipt_image = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+        required=False
+    )
+
     class Meta:
         model = Transaction
-        fields = ('Student', 'Officer', 'Transaction_date', 'Payment_type', 'Amount', 'Status')
+        fields = ('Student', 'Officer', 'Transaction_date', 'Payment_type', 'Amount', 'Status', 'Receipt_number', 'Receipt_image')
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

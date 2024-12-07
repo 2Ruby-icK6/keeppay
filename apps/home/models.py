@@ -81,6 +81,8 @@ class Transaction(Recents):
     ]
     
     Status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='Unpaid')
+    Receipt_number = models.CharField(max_length=100,null=True)
+    Receipt_image = models.ImageField(upload_to="receipt_images/%Y/%m/%d", null=True)
 
     def save(self, *args, **kwargs):
         if self.Amount >= self.Payment_type.Fee_amount:
