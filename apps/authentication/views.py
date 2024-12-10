@@ -600,11 +600,11 @@ def payee_form(request):
         officer = None
 
     if request.method == 'POST':
-        form = Payee(request.POST, user=request.user)
+        form = Payee(data=request.POST, files=request.FILES, user=request.user)
         if form.is_valid():
             payee_instance = form.save(commit=False)
             payee_instance.Officer = officer
-            payee_instance = form.save()
+            payee_instance.save()
 
             fees = []
             for key in request.POST:
@@ -613,9 +613,8 @@ def payee_form(request):
                     fee_type_id = request.POST[key]
                     amount = request.POST.get(f'amount_{fee_index}')
                     status = request.POST.get(f'status_{fee_index}')
-                    receipt_number = form.Receipt_number
-                    receipt_image = form.Receipt_image
-
+                    receipt_number = request.POST.get(f'receipt_number_{fee_index}')
+                    receipt_image = request.POST.get(f'images_{fee_index}')
                     # Create a new fee instance, even if duplicates exist
                     fee_instance = Transaction(
                         Student=payee_instance.Student,

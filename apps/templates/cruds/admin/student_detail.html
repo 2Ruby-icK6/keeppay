@@ -66,6 +66,8 @@
                   <th scope="col">Transaction Date</th>
                   <th scope="col">Payment Type</th>
                   <th scope="col">Amount</th>
+                  <th scope="col">Receipt Number</th>
+                  <th scope="col">Receipt Image</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -88,6 +90,12 @@
                     </td>
                     <td>
                       <span class="name mb-0 text-sm">{{ transaction.Amount }}</span>
+                    </td>
+                    <td>
+                      <span class="name mb-0 text-sm">{{ transaction.Receipt_number }}</span>
+                    </td>
+                    <td>
+                      <span class="name mb-0 text-sm">{{ transaction.Receipt_image }}</span>
                     </td>
                     <td>
                       <a href="{% url 'transaction-delete' transaction.id %}" class="btn btn-sm btn-danger">Delete</a>

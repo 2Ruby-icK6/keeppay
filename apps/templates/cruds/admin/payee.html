@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="card-body">
-          <form method="POST">
+          <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <h6 class="heading-small text-muted mb-4">Transaction</h6>
             <div class="pl-lg-4">
@@ -80,13 +80,13 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <label class="form-control-label" for="input-receipt">Receipt Number</label>
-                      {{ form.Receipt_number }}
+                      <label class="form-control-label" for="input-image">Receipt Number</label>
+                      <input type="text" class="form-control amount-input" name="Receipt_number">
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="form-group">
-                      <label class="form-control-label" for="input-image">Receipt Image</label>
+                      <label class="form-control-label" for="input-receipt">Receipt Image</label>
                       {{ form.Receipt_image }}
                     </div>
                   </div>
@@ -263,14 +263,14 @@
                 </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <label class="form-control-label" for="input-receipt">Receipt Number</label>
-                      {{ form.Receipt_number }}
+                      <label class="form-control-label" for="input-image">Receipt Number</label>
+                      <input type="text" class="form-control amount-input" name="receipt_number_${feeCount}">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <label class="form-control-label" for="input-image">Receipt Image</label>
-                      {{ form.Receipt_image }}
+                      <label class="form-control-label" for="input-receipt">Receipt Image</label>
+                      <input type="file" name="images_${feeCount}">
                     </div>
                   </div>
               </div>`;
